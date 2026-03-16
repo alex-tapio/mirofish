@@ -70,10 +70,12 @@ class Config:
 
     @classmethod
     def validate(cls):
-        """Validate required configuration"""
+        """Validate required configuration.
+
+        LLM_API_KEY is optional at startup — users provide their own
+        API keys via the Settings page (BYO key model).
+        """
         errors = []
-        if not cls.LLM_API_KEY:
-            errors.append("LLM_API_KEY is not configured")
         if not cls.NEO4J_URI:
             errors.append("NEO4J_URI is not configured")
         if not cls.NEO4J_PASSWORD:

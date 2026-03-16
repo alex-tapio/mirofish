@@ -4,12 +4,10 @@ services:
     runtime: python
     rootDir: backend
     buildCommand: pip install -r requirements.txt
-    startCommand: python run.py
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 300 "app:create_app()"
     envVars:
       - key: FLASK_DEBUG
         value: "False"
-      - key: FLASK_PORT
-        value: "5001"
       - key: NEO4J_URI
         sync: false
       - key: NEO4J_USER
@@ -26,3 +24,24 @@ services:
         value: "text-embedding-3-small"
       - key: EMBEDDING_BASE_URL
         value: "https://api.openai.com/v1"
+
+  - type: web
+    name: mirofish-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: mirofish-backend
+          property: host

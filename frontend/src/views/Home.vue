@@ -2,10 +2,11 @@
   <div class="home-container">
     <!-- Top Navigation Bar -->
     <nav class="navbar" :style="s.navbar">
-      <div class="nav-brand" :style="s.navBrand">MIROFISH OFFLINE</div>
+      <div class="nav-brand" :style="s.navBrand">MIROFISH</div>
       <div class="nav-links" :style="s.navLinks">
-        <a href="https://github.com/nikmcfly/MiroFish-Offline" target="_blank" class="github-link" :style="s.githubLink">
-          Visit our Github <span>↗</span>
+        <router-link to="/settings" :style="{ ...s.githubLink, marginRight: '20px' }">Settings</router-link>
+        <a href="https://github.com/alex-tapio/mirofish" target="_blank" class="github-link" :style="s.githubLink">
+          Github <span>↗</span>
         </a>
       </div>
     </nav>
@@ -15,8 +16,8 @@
       <section class="hero-section" :style="s.heroSection">
         <div class="hero-left" :style="s.heroLeft">
           <div class="tag-row" :style="s.tagRow">
-            <span class="orange-tag" :style="s.orangeTag">Offline Multi-Agent Simulation Engine</span>
-            <span class="version-text" :style="s.versionText">/ v0.1-preview</span>
+            <span class="orange-tag" :style="s.orangeTag">Multi-Agent Simulation Engine</span>
+            <span class="version-text" :style="s.versionText">/ v0.2-mvp</span>
           </div>
 
           <h1 class="main-title" :style="s.mainTitle">
@@ -26,10 +27,10 @@
 
           <div class="hero-desc" :style="s.heroDesc">
             <p :style="s.heroDescP">
-              From a single document, <span :style="s.highlightBold">MiroFish Offline</span> extracts reality seeds and builds a parallel world of <span :style="s.highlightOrange">autonomous AI agents</span> — running entirely on your machine. Inject variables, observe emergent behavior, and find <span :style="s.highlightCode">"local optima"</span> in complex social dynamics.
+              From a single document, <span :style="s.highlightBold">MiroFish</span> extracts reality seeds and builds a parallel world of <span :style="s.highlightOrange">autonomous AI agents</span> — powered by your own API key. Inject variables, observe emergent behavior, and find <span :style="s.highlightCode">"local optima"</span> in complex social dynamics.
             </p>
             <p class="slogan-text" :style="s.sloganText">
-              Your data never leaves your machine. The future is simulated locally<span :style="s.blinkingCursor">_</span>
+              Bring your own API key. Simulate anything<span :style="s.blinkingCursor">_</span>
             </p>
           </div>
 
@@ -59,12 +60,12 @@
 
           <div class="metrics-row" :style="s.metricsRow">
             <div class="metric-card" :style="s.metricCard">
-              <div class="metric-value" :style="s.metricValue">Free</div>
-              <div class="metric-label" :style="s.metricLabel">Runs on your hardware</div>
+              <div class="metric-value" :style="s.metricValue">BYO Key</div>
+              <div class="metric-label" :style="s.metricLabel">Use your own API key</div>
             </div>
             <div class="metric-card" :style="s.metricCard">
-              <div class="metric-value" :style="s.metricValue">Private</div>
-              <div class="metric-label" :style="s.metricLabel">100% offline, no cloud</div>
+              <div class="metric-value" :style="s.metricValue">Instant</div>
+              <div class="metric-label" :style="s.metricLabel">No setup, just a browser</div>
             </div>
           </div>
 
@@ -123,11 +124,15 @@
               </div>
               <div :style="s.inputWrapper">
                 <textarea v-model="formData.simulationRequirement" :style="s.codeInput" placeholder="// Describe your simulation or prediction goal in natural language" rows="6" :disabled="loading"></textarea>
-                <div :style="s.modelBadge">Engine: Ollama + Neo4j (local)</div>
+                <div :style="s.modelBadge">Engine: Your LLM + Neo4j</div>
               </div>
             </div>
 
             <div :style="s.btnSection">
+              <div v-if="!hasApiKey" :style="{ padding: '12px 16px', background: '#FFF8F0', border: '1px solid #FF4500', marginBottom: '12px', fontFamily: mono, fontSize: '0.8rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }">
+                <span>Configure your API key to get started</span>
+                <router-link to="/settings" :style="{ color: '#FF4500', fontWeight: '700', textDecoration: 'none' }">Settings →</router-link>
+              </div>
               <button :style="s.startEngineBtn" @click="startSimulation" :disabled="!canSubmit || loading">
                 <span v-if="!loading">Start Engine</span>
                 <span v-else>Initializing...</span>
@@ -218,9 +223,9 @@ const s = reactive({
 })
 
 const steps = [
-  { num: '01', title: 'Graph Build', desc: 'Extract reality seeds from your document, build knowledge graph with Neo4j + GraphRAG' },
-  { num: '02', title: 'Env Setup', desc: 'Generate agent personas, configure simulation parameters via local Ollama LLM' },
-  { num: '03', title: 'Simulation', desc: 'Run multi-agent simulation locally with dynamic memory updates and emergent behavior' },
+  { num: '01', title: 'Graph Build', desc: 'Extract entities and relationships from your document, build a knowledge graph' },
+  { num: '02', title: 'Env Setup', desc: 'Generate agent personas and configure simulation parameters using your LLM provider' },
+  { num: '03', title: 'Simulation', desc: 'Run multi-agent simulation with dynamic memory updates and emergent behavior' },
   { num: '04', title: 'Report', desc: 'ReportAgent analyzes the simulation results and generates a detailed prediction report' },
   { num: '05', title: 'Interaction', desc: 'Chat with any agent from the simulated world or discuss findings with ReportAgent' },
 ]
@@ -234,8 +239,19 @@ const error = ref('')
 const isDragOver = ref(false)
 const fileInput = ref(null)
 
+const hasApiKey = computed(() => {
+  try {
+    const stored = localStorage.getItem('mirofish_settings')
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      return !!parsed.apiKey
+    }
+  } catch {}
+  return false
+})
+
 const canSubmit = computed(() => {
-  return formData.value.simulationRequirement.trim() !== '' && files.value.length > 0
+  return formData.value.simulationRequirement.trim() !== '' && files.value.length > 0 && hasApiKey.value
 })
 
 const triggerFileInput = () => { if (!loading.value) fileInput.value?.click() }

@@ -133,7 +133,7 @@ const providers = [
   {
     id: 'openai',
     name: 'OpenAI',
-    description: 'GPT-4o, GPT-4o mini, o3-mini',
+    description: 'GPT-5 Mini, GPT-5, o3-mini',
     keyUrl: 'https://platform.openai.com/api-keys',
     keyUrlLabel: 'platform.openai.com',
     keyPlaceholder: 'sk-...',
@@ -149,7 +149,7 @@ const providers = [
   {
     id: 'google',
     name: 'Google AI',
-    description: 'Gemini Flash, Pro',
+    description: 'Gemini 3 Flash, 2.5 Pro',
     keyUrl: 'https://aistudio.google.com/apikey',
     keyUrlLabel: 'aistudio.google.com',
     keyPlaceholder: 'AIza...',
@@ -174,8 +174,8 @@ const providers = [
 
 const modelCatalog = {
   openai: [
-    { id: 'gpt-4o-mini', name: 'GPT-4o Mini', cost: '$', costClass: 'cheap', desc: 'Fast and affordable. Great for most simulations.' },
-    { id: 'gpt-4o', name: 'GPT-4o', cost: '$$', costClass: 'mid', desc: 'Smarter, better reasoning. For complex scenarios.' },
+    { id: 'gpt-5-mini', name: 'GPT-5 Mini', cost: '$', costClass: 'cheap', desc: 'Fast and affordable. Great for most simulations.' },
+    { id: 'gpt-5', name: 'GPT-5', cost: '$$', costClass: 'mid', desc: 'Smarter, better reasoning. For complex scenarios.' },
     { id: 'o3-mini', name: 'o3-mini', cost: '$$', costClass: 'mid', desc: 'Advanced reasoning model. Best for analysis.' },
   ],
   anthropic: [
@@ -184,13 +184,13 @@ const modelCatalog = {
     { id: 'claude-opus-4-20250918', name: 'Claude Opus 4', cost: '$$$', costClass: 'premium', desc: 'Most capable. Best for deep analysis and reports.' },
   ],
   google: [
-    { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', cost: '$', costClass: 'cheap', desc: 'Extremely fast and cheap. Great for large simulations.' },
+    { id: 'gemini-3-flash-preview', name: 'Gemini 3 Flash', cost: '$', costClass: 'cheap', desc: 'Pro-grade reasoning at Flash-level speed. Great for simulations.' },
     { id: 'gemini-2.5-pro-preview-06-05', name: 'Gemini 2.5 Pro', cost: '$$', costClass: 'mid', desc: 'Most capable Google model. Strong reasoning.' },
   ],
   openrouter: [
     { id: 'anthropic/claude-haiku-4-5-20251001', name: 'Claude Haiku 4.5', cost: '$', costClass: 'cheap', desc: 'Fastest Anthropic model via OpenRouter.' },
-    { id: 'google/gemini-2.0-flash-001', name: 'Gemini 2.0 Flash', cost: '$', costClass: 'cheap', desc: 'Fastest Google model via OpenRouter.' },
-    { id: 'openai/gpt-4o-mini', name: 'GPT-4o Mini', cost: '$', costClass: 'cheap', desc: 'Fast OpenAI model via OpenRouter.' },
+    { id: 'google/gemini-3-flash-preview', name: 'Gemini 3 Flash', cost: '$', costClass: 'cheap', desc: 'Fastest Google model via OpenRouter.' },
+    { id: 'openai/gpt-5-mini', name: 'GPT-5 Mini', cost: '$', costClass: 'cheap', desc: 'Fast OpenAI model via OpenRouter.' },
     { id: 'anthropic/claude-sonnet-4-20250514', name: 'Claude Sonnet 4', cost: '$$', costClass: 'mid', desc: 'Balanced Anthropic model via OpenRouter.' },
   ],
   custom: [],
@@ -208,7 +208,7 @@ const settings = reactive({
   provider: 'openai',
   apiKey: '',
   baseUrl: 'https://api.openai.com/v1',
-  model: 'gpt-4o-mini',
+  model: 'gpt-5-mini',
 })
 
 const selectedProvider = computed(() => providers.find(p => p.id === settings.provider))

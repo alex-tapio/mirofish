@@ -19,7 +19,7 @@ services:
       - key: LLM_BASE_URL
         value: "https://api.openai.com/v1"
       - key: LLM_MODEL_NAME
-        value: "gpt-4o-mini"
+        value: "gpt-5-mini"
       - key: EMBEDDING_MODEL
         value: "text-embedding-3-small"
       - key: EMBEDDING_BASE_URL

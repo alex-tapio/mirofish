@@ -28,7 +28,7 @@ class Config:
     # LLM (OpenAI-compatible format)
     LLM_API_KEY = os.environ.get('LLM_API_KEY')
     LLM_BASE_URL = os.environ.get('LLM_BASE_URL', 'https://api.openai.com/v1')
-    LLM_MODEL_NAME = os.environ.get('LLM_MODEL_NAME', 'gpt-4o-mini')
+    LLM_MODEL_NAME = os.environ.get('LLM_MODEL_NAME', 'gpt-5-mini')
 
     # Neo4j Aura (cloud)
     NEO4J_URI = os.environ.get('NEO4J_URI', 'neo4j+s://localhost')

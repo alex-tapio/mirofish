@@ -1,6 +1,6 @@
 """
-模拟相关API路由
-Step2: 实体读取与过滤、OASIS模拟准备与运行（全程自动化）
+Simulation API routes
+Step2: Entity reading & filtering, OASIS simulation preparation & execution
 """
 
 import os
@@ -13,6 +13,7 @@ from ..services.entity_reader import EntityReader
 from ..services.oasis_profile_generator import OasisProfileGenerator
 from ..services.simulation_manager import SimulationManager, SimulationStatus
 from ..services.simulation_runner import SimulationRunner, RunnerStatus
+from ..utils.request_llm import get_llm_client_from_request
 from ..utils.logger import get_logger
 from ..models.project import ProjectManager
 
@@ -1409,7 +1410,12 @@ def generate_profiles():
                 "error": "没有找到符合条件的实体"
             }), 400
         
-        generator = OasisProfileGenerator()
+        llm_client = get_llm_client_from_request()
+        generator = OasisProfileGenerator(
+            api_key=llm_client.api_key,
+            base_url=llm_client.base_url,
+            model_name=llm_client.model
+        )
         profiles = generator.generate_profiles_from_entities(
             entities=filtered.entities,
             use_llm=use_llm

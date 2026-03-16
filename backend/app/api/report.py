@@ -1,6 +1,6 @@
 """
-Report API路由
-提供模拟报告生成、获取、对话等接口
+Report API routes
+Provides simulation report generation, retrieval, and conversation endpoints
 """
 
 import os
@@ -14,6 +14,7 @@ from ..services.report_agent import ReportAgent, ReportManager, ReportStatus
 from ..services.simulation_manager import SimulationManager
 from ..models.project import ProjectManager
 from ..models.task import TaskManager, TaskStatus
+from ..utils.request_llm import get_llm_client_from_request
 from ..utils.logger import get_logger
 
 logger = get_logger('mirofish.api.report')
@@ -120,21 +121,25 @@ def generate_report():
             }
         )
         
-        # 定义后台任务
+        # Capture user's LLM settings before spawning background thread
+        llm_client = get_llm_client_from_request()
+
+        # Define background task
         def run_generate():
             try:
                 task_manager.update_task(
                     task_id,
                     status=TaskStatus.PROCESSING,
                     progress=0,
-                    message="初始化Report Agent..."
+                    message="Initializing Report Agent..."
                 )
-                
-                # 创建Report Agent
+
+                # Create Report Agent with user's LLM settings
                 agent = ReportAgent(
                     graph_id=graph_id,
                     simulation_id=simulation_id,
-                    simulation_requirement=simulation_requirement
+                    simulation_requirement=simulation_requirement,
+                    llm_client=llm_client
                 )
                 
                 # 进度回调
@@ -536,11 +541,13 @@ def chat_with_report_agent():
         
         simulation_requirement = project.simulation_requirement or ""
         
-        # 创建Agent并进行对话
+        # Create Agent with user's LLM settings
+        llm_client = get_llm_client_from_request()
         agent = ReportAgent(
             graph_id=graph_id,
             simulation_id=simulation_id,
-            simulation_requirement=simulation_requirement
+            simulation_requirement=simulation_requirement,
+            llm_client=llm_client
         )
         
         result = agent.chat(message=message, chat_history=chat_history)

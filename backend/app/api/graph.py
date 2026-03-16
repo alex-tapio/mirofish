@@ -1,6 +1,6 @@
 """
-图谱相关API路由
-采用项目上下文机制，服务端持久化状态
+Graph API routes
+Project context mechanism with server-side state persistence
 """
 
 import os
@@ -14,11 +14,11 @@ from ..services.ontology_generator import OntologyGenerator
 from ..services.graph_builder import GraphBuilderService
 from ..services.text_processor import TextProcessor
 from ..utils.file_parser import FileParser
+from ..utils.request_llm import get_llm_client_from_request
 from ..utils.logger import get_logger
 from ..models.task import TaskManager, TaskStatus
 from ..models.project import ProjectManager, ProjectStatus
 
-# 获取日志器
 logger = get_logger('mirofish.api')
 
 
@@ -219,9 +219,10 @@ def generate_ontology():
         ProjectManager.save_extracted_text(project.project_id, all_text)
         logger.info(f"文本提取完成，共 {len(all_text)} 字符")
         
-        # 生成本体
-        logger.info("调用 LLM 生成本体定义...")
-        generator = OntologyGenerator()
+        # Generate ontology using user's LLM settings
+        logger.info("Calling LLM to generate ontology...")
+        llm_client = get_llm_client_from_request()
+        generator = OntologyGenerator(llm_client=llm_client)
         ontology = generator.generate(
             document_texts=document_texts,
             simulation_requirement=simulation_requirement,

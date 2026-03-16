@@ -141,7 +141,7 @@ const providers = [
   {
     id: 'anthropic',
     name: 'Anthropic',
-    description: 'Claude Haiku, Sonnet, Opus',
+    description: 'Haiku 4.5, Sonnet 4.6, Opus 4.6',
     keyUrl: 'https://console.anthropic.com/settings/keys',
     keyUrlLabel: 'console.anthropic.com',
     keyPlaceholder: 'sk-ant-...',
@@ -149,18 +149,10 @@ const providers = [
   {
     id: 'google',
     name: 'Google AI',
-    description: 'Gemini 3 Flash, 2.5 Pro',
+    description: 'Gemini 3 Flash, 3 Pro',
     keyUrl: 'https://aistudio.google.com/apikey',
     keyUrlLabel: 'aistudio.google.com',
     keyPlaceholder: 'AIza...',
-  },
-  {
-    id: 'openrouter',
-    name: 'OpenRouter',
-    description: 'All models, one key',
-    keyUrl: 'https://openrouter.ai/keys',
-    keyUrlLabel: 'openrouter.ai',
-    keyPlaceholder: 'sk-or-...',
   },
   {
     id: 'custom',
@@ -180,18 +172,12 @@ const modelCatalog = {
   ],
   anthropic: [
     { id: 'claude-haiku-4-5-20251001', name: 'Claude Haiku 4.5', cost: '$', costClass: 'cheap', desc: 'Fastest and cheapest. Perfect for large agent swarms.' },
-    { id: 'claude-sonnet-4-20250514', name: 'Claude Sonnet 4', cost: '$$', costClass: 'mid', desc: 'Balanced speed and intelligence.' },
-    { id: 'claude-opus-4-20250918', name: 'Claude Opus 4', cost: '$$$', costClass: 'premium', desc: 'Most capable. Best for deep analysis and reports.' },
+    { id: 'claude-sonnet-4-6', name: 'Claude Sonnet 4.6', cost: '$$', costClass: 'mid', desc: 'Balanced speed and intelligence.' },
+    { id: 'claude-opus-4-6', name: 'Claude Opus 4.6', cost: '$$$', costClass: 'premium', desc: 'Most capable. Best for deep analysis and reports.' },
   ],
   google: [
     { id: 'gemini-3-flash-preview', name: 'Gemini 3 Flash', cost: '$', costClass: 'cheap', desc: 'Pro-grade reasoning at Flash-level speed. Great for simulations.' },
-    { id: 'gemini-2.5-pro-preview-06-05', name: 'Gemini 2.5 Pro', cost: '$$', costClass: 'mid', desc: 'Most capable Google model. Strong reasoning.' },
-  ],
-  openrouter: [
-    { id: 'anthropic/claude-haiku-4-5-20251001', name: 'Claude Haiku 4.5', cost: '$', costClass: 'cheap', desc: 'Fastest Anthropic model via OpenRouter.' },
-    { id: 'google/gemini-3-flash-preview', name: 'Gemini 3 Flash', cost: '$', costClass: 'cheap', desc: 'Fastest Google model via OpenRouter.' },
-    { id: 'openai/gpt-5-mini', name: 'GPT-5 Mini', cost: '$', costClass: 'cheap', desc: 'Fast OpenAI model via OpenRouter.' },
-    { id: 'anthropic/claude-sonnet-4-20250514', name: 'Claude Sonnet 4', cost: '$$', costClass: 'mid', desc: 'Balanced Anthropic model via OpenRouter.' },
+    { id: 'gemini-3-pro', name: 'Gemini 3 Pro', cost: '$$', costClass: 'mid', desc: 'Most capable Google model. Strong reasoning.' },
   ],
   custom: [],
 }
@@ -200,7 +186,6 @@ const providerBaseUrls = {
   openai: 'https://api.openai.com/v1',
   anthropic: 'https://api.anthropic.com/v1/',
   google: 'https://generativelanguage.googleapis.com/v1beta/openai/',
-  openrouter: 'https://openrouter.ai/api/v1',
   custom: '',
 }
 

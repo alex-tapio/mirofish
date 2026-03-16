@@ -48,14 +48,21 @@ class Neo4jStorage(GraphStorage):
         self._password = password or Config.NEO4J_PASSWORD
 
         self._driver = GraphDatabase.driver(
-            self._uri, auth=(self._user, self._password)
+            self._uri, auth=(self._user, self._password),
+            connection_timeout=15,
+            max_connection_lifetime=300,
         )
         self._embedding = embedding_service or EmbeddingService()
         self._ner = ner_extractor or NERExtractor()
         self._search = SearchService(self._embedding)
 
-        # Initialize schema (indexes, constraints)
-        self._ensure_schema()
+        # Initialize schema (indexes, constraints) — non-blocking
+        self._schema_ready = False
+        try:
+            self._ensure_schema()
+            self._schema_ready = True
+        except Exception as e:
+            logger.warning(f"Schema init deferred (Neo4j may be waking up): {e}")
 
     def close(self):
         """Close the Neo4j driver connection."""
